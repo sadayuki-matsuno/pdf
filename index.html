@@ -4,6 +4,7 @@
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 <script>
 var open = {}
+/**
 $.ajax({
   type: 'GET',
   contentType: 'application/json',
@@ -23,6 +24,7 @@ $.ajax({
     console.log("failure");
   }
 });
+**/
 </script>
 </head>
 <body>
@@ -31,8 +33,7 @@ $.ajax({
   </h1>
   <div>
   </div>
-</body>
-<script>
+  <script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '1691205811153691',
@@ -49,4 +50,5 @@ $.ajax({
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
+</body>
 </html>
