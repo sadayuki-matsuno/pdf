@@ -12,13 +12,13 @@ $.ajax({
   success: function(data) {
     //取得成功したら実行する処理
     console.log("ファイルの取得に成功しました");
-    $div = $('<div>').text("");
+    $p = $('<p>').text("");
     Object.keys(data).forEach(function(key) {
       var value = this[key]
-      $div += $('<div>').text(value.Name);
+      $p += $('<p>').text(value.Name.toString());
+      $('div').append($p);
       console.log([key, ':', value.Name].join(' '));
     }, data);
-    $('div').append($div);
     open = data
     console.log(open)
   },
