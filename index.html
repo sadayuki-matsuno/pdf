@@ -110,7 +110,27 @@ $.ajax({
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '!';
+      'Thanks for logging in, ' + response.name + '!';
+      $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: 'https://88kzy3jl65.execute-api.ap-northeast-1.amazonaws.com/development/greetings/postex',
+        dataType: 'json',
+        data: { "login name" : response.name },
+        success: function(response) {
+          console.log("success!");
+          Object.keys(response).forEach(function(key) {
+          var value = this[key]
+          console.log(value.Name.toString())
+          $p = $('<p>').text(value.Name.toString());
+          $('div').append($p);
+          }, response);
+          open = response
+        },
+        error:function() {
+          console.log("failure");
+        }
+      });
     });
   }
 </script>
