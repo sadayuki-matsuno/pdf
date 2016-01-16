@@ -11,9 +11,8 @@ $.ajax({
   success: function(data) {
     //取得成功したら実行する処理
     console.log("ファイルの取得に成功しました");
-    $div = $('<div>').text('これは子要素');
+    $div = $('<div>').text(data);
     $('div').append($div);
-    $div.appendTo($('div'));
   },
   error:function() {
     //取得失敗時に実行する処理
