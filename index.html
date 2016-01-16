@@ -10,20 +10,17 @@ $.ajax({
   url: 'https://88kzy3jl65.execute-api.ap-northeast-1.amazonaws.com/development/greetings/hello',
   dataType: 'json',
   success: function(data) {
-    //取得成功したら実行する処理
-    console.log("ファイルの取得に成功しました");
+    console.log("success!");
     Object.keys(data).forEach(function(key) {
       var value = this[key]
       console.log(value.Name.toString())
       $p = $('<p>').text(value.Name.toString());
       $('div').append($p);
-//      console.log([key, ':', value.Name].join(' '));
     }, data);
     open = data
   },
   error:function() {
-    //取得失敗時に実行する処理
-    console.log("何らかの理由で失敗しました");
+    console.log("failure");
   }
 });
 </script>
