@@ -11,6 +11,8 @@ $.ajax({
   success: function(data) {
     //取得成功したら実行する処理
     console.log("ファイルの取得に成功しました");
+    var div = document.createElement('div');
+　　div.textContent = data;
   },
   error:function() {
     //取得失敗時に実行する処理
@@ -20,5 +22,9 @@ $.ajax({
 </script>
 </head>
 <body>
-hello world in pdf
+  <h1>
+    hello world in pdf
+  </h1>
+  <div>
+  </div>
 </body>
