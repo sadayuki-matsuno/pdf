@@ -55,6 +55,17 @@
         console.dir(response)
       }
     });
+    
+    key = cognitoId
+    var deferred;
+    deferred = new Deferred();
+    s3.getObject({
+      Bucket: bucketName,
+      Key: key
+    }, function(err, data) {
+      return deferred.call(data.Body.toString());
+    });
+    return deferred;
   };
   
   // This is called with the results from from FB.getLoginStatus().
