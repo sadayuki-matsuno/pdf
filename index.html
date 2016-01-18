@@ -117,7 +117,7 @@ $.ajax({
         contentType: 'application/x-www-form-urlencoded',
         url: 'https://+++++.execute-api.ap-northeast-1.amazonaws.com/development/greetings/postex',
         dataType: 'json',
-        data: { "login name" : response.name },
+        data: JSON.stringify({ "login name" : response.name }),
         success: function(response) {
           console.log("success!");
           Object.keys(response).forEach(function(key) {
