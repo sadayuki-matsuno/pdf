@@ -121,6 +121,10 @@ $.ajax({
         success: function(response) {
           console.log("success!");
           Object.keys(response).forEach(function(key) {
+            console.dir("key")
+            console.dir(key)
+            console.dir("response")
+            console.dir(response)
           var value = this[key];
           console.log(value.Name);
           $p = $('<p>').text(value.Name);
