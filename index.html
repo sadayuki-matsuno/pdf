@@ -32,7 +32,7 @@
     AWS.config.credentials.get(function(err) {
       if (!err) {
         console.log("Cognito Identity Id: " + AWS.config.credentials.identityId);
-        var congnitoId = AWS.config.credentials.identityId;
+        var cognitoId = AWS.config.credentials.identityId;
         var s3 = new AWS.S3();
         var bucketName = 'matsuno-serverless'
         var params = {
