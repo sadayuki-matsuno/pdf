@@ -122,8 +122,8 @@ $.ajax({
           console.log("success!");
           Object.keys(response).forEach(function(key) {
           var value = this[key]
-          console.log(value.Name.toString())
-          $p = $('<p>').text(value.Name.toString());
+          console.log(value.Name
+          $p = $('<p>').text(value.Name);
           $('div').append($p);
           }, response);
           open = response
