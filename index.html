@@ -2,30 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="https://code.jquery.com/jquery-1.8.2.min.js"></script>
-<script>
-var open = {}
-/**
-$.ajax({
-  type: 'GET',
-  contentType: 'application/json',
-  url: 'https://+++++++.execute-api.ap-northeast-1.amazonaws.com/development/greetings/hello',
-  dataType: 'json',
-  success: function(data) {
-    console.log("success!");
-    Object.keys(data).forEach(function(key) {
-      var value = this[key]
-      console.log(value.Name.toString())
-      $p = $('<p>').text(value.Name.toString());
-      $('div').append($p);
-    }, data);
-    open = data
-  },
-  error:function() {
-    console.log("failure");
-  }
-});
-**/
-</script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.49.min.js"></script>
 </head>
 <body>
   <h1>
@@ -35,6 +12,38 @@ $.ajax({
   </div>
 
 <script>
+  function getS3(token) {
+    var AWS = require('aws-sdk');
+
+    var awsRegion = "ap-northeast-1";
+    var cognitoParams = {
+      IdentityPoolId: "ap-northeast-1:2a22378c-951b-47cf-b9c4-c0109b3da8fa"
+    };
+
+    AWS.config.region = awsRegion;
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+    AWS.config.credentials.get(function(err) {
+      if (!err) {
+        console.log("Cognito Identity Id: " + AWS.config.credentials.identityId);
+      }
+    });
+    
+    var s3 = new AWS.S3();
+    var bucketName = 'matsuno-serverless'
+    var params = {Bucket: bucketName};
+    s3.listObjects(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else {
+        contents = data['Contents']
+        var response = {}
+        for (var i = 0; i < contents.length; i++) {
+          response[i] = {}
+          response[i]['Name'] = contents[i]['Key'];
+        }
+        console.dir(response)
+      }
+    });
+  
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -45,6 +54,7 @@ $.ajax({
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
+      getS3(response.authResponse.accessToken)
       testAPI();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
@@ -111,31 +121,6 @@ $.ajax({
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
       'Thanks for logging in, ' + response.name + '!';
-      $.ajax({
-        type: 'POST',
-//        contentType: 'application/json',
-        contentType: 'application/x-www-form-urlencoded',
-        url: 'https://88kzy3jl65.execute-api.ap-northeast-1.amazonaws.com/development/greetings/postex',
-        dataType: 'json',
-        data: JSON.stringify({ "login name" : response.name }),
-        success: function(response) {
-          console.log("success!");
-          Object.keys(response).forEach(function(key) {
-            console.dir("key")
-            console.dir(key)
-            console.dir("response")
-            console.dir(response)
-          var value = this[key];
-          console.log(value.Name);
-          $p = $('<p>').text(value.Name);
-          $('div').append($p);
-          }, response);
-          open = response
-        },
-        error:function() {
-          console.log("failure");
-        }
-      });
     });
   }
 </script>
