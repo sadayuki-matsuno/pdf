@@ -43,8 +43,9 @@
       Bucket: bucketName,
       Prefix: cognitoId
     };
+    console.dir(s3)
     s3.listObjects(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
+      if (err) console.log('error!! : ',err, err.stack); // an error occurred
       else {
         contents = data['Contents']
         var response = {}
@@ -54,15 +55,6 @@
         }
         console.dir(response)
       }
-    });
-    
-    key = cognitoId
-    s3.getObject({
-      Bucket: bucketName,
-      Key: key
-    }, function(err, data) {
-      console.dir("----------data--------------")
-      console.dir(data);
     });
   };
   
