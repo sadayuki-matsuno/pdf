@@ -1,4 +1,4 @@
-function listAllObjects(token) {
+(function()  {
   if (token) {
     console.log("token : ",token);
     var awsRegion = "ap-northeast-1";
@@ -37,4 +37,4 @@ function listAllObjects(token) {
       }
     });
   }
-};
+}());
