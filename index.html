@@ -3,6 +3,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="https://code.jquery.com/jquery-1.8.2.min.js"></script>
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.49.min.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/aws.js"></script>
 </head>
 <body>
   <h1>
@@ -10,140 +12,8 @@
   </h1>
   <div>
   </div>
-
-<script>
-
-  function getS3(token) {
-
-    console.log("token : ",token);
-    var awsRegion = "ap-northeast-1";
-    var creds = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: "ap-northeast-1:2a22378c-951b-47cf-b9c4-c0109b3da8fa",
-      Logins: { 
-        'graph.facebook.com': token
-      }
-    });
-
-    AWS.config.update({
-      region: awsRegion,
-      credentials: creds
-    });
-
-    AWS.config.credentials.get(function(err) {
-      if (!err) {
-        console.log("Cognito Identity Id: " + AWS.config.credentials.identityId);
-        var cognitoId = AWS.config.credentials.identityId;
-        var s3 = new AWS.S3();
-        var bucketName = 'matsuno-serverless'
-        var params = {
-          Bucket: bucketName,
-          Prefix: cognitoId
-        };
-        s3.listObjects(params, function(err, data) {
-          if (err) console.log('error!! : ',err, err.stack); // an error occurred
-          else {
-            contents = data['Contents']
-            var response = {}
-            for (var i = 0; i < contents.length; i++) {
-              response[i] = {}
-              response[i]['Name'] = contents[i]['Key'];
-          }
-          console.dir(response)
-          }
-        });
-      }
-    });
-  };
-  
-  // This is called with the results from from FB.getLoginStatus().
-  function statusChangeCallback(response) {
-    console.log('statusChangeCallback');
-    console.log(response);
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
-      getS3(response.authResponse.accessToken)
-      testAPI();
-    } else if (response.status === 'not_authorized') {
-      // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
-    } else {
-      // The person is not logged into Facebook, so we're not sure if
-      // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
-    }
-  }
-
-  // This function is called when someone finishes with the Login
-  // Button.  See the onlogin handler attached to it in the sample
-  // code below.
-  function checkLoginState() {
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
-  }
-
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '1691205811153691',
-    xfbml      : true,
-    version    : 'v2.5',
-    status     : true,
-    cookie     : true,  // enable cookies to allow the server to access 
-  });
-
-  // Now that we've initialized the JavaScript SDK, we call 
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-
-  };
-
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-      'Thanks for logging in, ' + response.name + '!';
-    });
-  }
-</script>
-
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+  </fb:login-button>
 
 <div id="status">
 </div>
