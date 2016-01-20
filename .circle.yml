@@ -1,0 +1,23 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  timezone: Asia/Tokyo
+
+dependencies:
+  pre:
+    - npm install
+    - git config --global user.name "CircleCI"
+    - git config --global user.email "circleci@example.com"
+
+test:
+  override:
+    - true
+
+deployment:
+  master:
+    branch: master
+    commands:
+    commands:
