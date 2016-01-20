@@ -19,7 +19,7 @@ test:
     - ./dummy.sh
 
 deployment:
-  master:
+  production:
     branch: master
     commands: 
       - git clone --recursive -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
