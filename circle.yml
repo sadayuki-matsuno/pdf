@@ -19,12 +19,11 @@ test:
     - ./dummy.sh
 
 deployment:
-  master:
+  production:
     branch: master
     commands: 
-      - git clone -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
+      - git clone --recursive -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
       - cd dev && npm install
-      - cd dev && git submodule add -f -b  gh-pages https://github.com/sadayuki-matsuno/redux-sample.git dist
       - rm -rf dev/dist/*
       - cd dev && NODE_ENV=production npm run compile
       - cd dev/dist && git add -A
