@@ -14,7 +14,7 @@ dependencies:
 
 test:
   override:
-    - true
+    - ./dummy.sh
 
 deployment:
   master:
