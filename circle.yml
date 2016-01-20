@@ -10,13 +10,12 @@ machine:
 
 dependencies:
   pre:
-    - npm install
     - git config --global user.name "CircleCI"
     - git config --global user.email "circleci@example.com"
 
 test:
   override:
-    - ./dummy.sh
+    - npm test
 
 deployment:
   production:
