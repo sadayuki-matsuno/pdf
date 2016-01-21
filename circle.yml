@@ -21,7 +21,8 @@ deployment:
   production:
     branch: master
     commands: 
-      - git clone --recursive -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
+      - git clone -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
+      - git submodule add -f-b gh-pages git@github.com:sadayuki-matsuno/redux-sample.git dist
       - cd dev && npm install
       - rm -rf dev/dist/*
       - cd dev && NODE_ENV=production npm run compile
