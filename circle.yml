@@ -27,5 +27,5 @@ deployment:
       - rm -rf dev/dist/*
       - cd dev && NODE_ENV=production npm run compile
       - cd dev/dist && git add -A
-      - cd dev/dist && git commit -m "[ci skip] publish"
+      - cd dev/dist && git commit -m "[ci skip] publish" || true
       - cd dev/dist && git push origin gh-pages
