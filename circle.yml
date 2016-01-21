@@ -22,17 +22,10 @@ deployment:
     branch: master
     commands: 
       - git clone -b dev git@github.com:sadayuki-matsuno/redux-sample.git dev
-      - git submodule add -f -b gh-pages git@github.com:sadayuki-matsuno/redux-sample.git dist
+      - cd dev && git submodule add -f -b gh-pages git@github.com:sadayuki-matsuno/redux-sample.git dist
       - cd dev && npm install
-      - ls -la dev/dist
       - rm -rf dev/dist/*
-      - ls -la dev/dist
       - cd dev && NODE_ENV=production npm run compile
-      - ls -la dev/dist
-      - cd dev/dist && git status
       - cd dev/dist && git add -A
-      - cd dev/dist && git status
-      - cd dev/dist && git status
       - cd dev/dist && git commit -m "[ci skip] publish"
-      - cd dev/dist && git status
       - cd dev/dist && git push origin gh-pages
