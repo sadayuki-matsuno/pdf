@@ -3,12 +3,12 @@ import { createAction, handleActions } from 'redux-actions'
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const COUNTER_INCREMENT = 'COUNTER_INCREMENT'
+export const CHANGE_DIRECTORY = 'CHANGE_DIRECTORY'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const increment = createAction(COUNTER_INCREMENT, (value = 1) => value)
+export const s3Path = createAction(CHANGE_DIRECTORY, (value = '/') => value)
 
 // This is a thunk, meaning it is a function that immediately
 // returns a function for lazy evaluation. It is incredibly useful for
@@ -16,22 +16,21 @@ export const increment = createAction(COUNTER_INCREMENT, (value = 1) => value)
 // NOTE: This is solely for demonstration purposes. In a real application,
 // you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
 // reducer take care of this logic.
-export const doubleAsync = () => {
+export const cd = (path) => {
   return (dispatch, getState) => {
-    setTimeout(() => {
-      dispatch(increment(getState().counter))
-    }, 1000)
+    console.dir('this is :' + getState().path + '/' + path)
   }
 }
 
 export const actions = {
-  increment,
-  doubleAsync
+  s3Path,
+  cd
+//  doubleAsync
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
 export default handleActions({
-  [COUNTER_INCREMENT]: (state, { payload }) => state + payload
-}, 3)
+  [CHANGE_DIRECTORY]: (state, { payload }) => payload
+}, '/')
