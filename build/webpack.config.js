@@ -18,7 +18,11 @@ const webpackConfig = {
     root: paths.base(config.dir_client),
     extensions: ['', '.js', '.jsx']
   },
-  module: {}
+// This is for aws-sdk
+// https://github.com/aws/aws-sdk-js/issues/603
+  module: {
+    noParse: [/aws-sdk/]
+  }
 }
 // ------------------------------------
 // Entry Points

@@ -11,7 +11,7 @@ export default class Root extends React.Component {
 
   get content () {
     return (
-      <Router history={this.props.history}>
+      <Router history={this.props.history} >
         {this.props.routes}
       </Router>
     )

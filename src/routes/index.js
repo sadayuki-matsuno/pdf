@@ -8,14 +8,14 @@ import { Route, IndexRoute, Redirect } from 'react-router'
 // your current file is.
 import CoreLayout from 'layouts/CoreLayout/CoreLayout'
 import HomeView from 'views/HomeView/HomeView'
-import ListBooksView from 'views/ListBooksView/ListBooksView'
+import Bookshelf from 'views/Bookshelf/Bookshelf'
 import NotFoundView from 'views/NotFoundView/NotFoundView'
 
 export default (
   <Route path='/redux-sample' component={CoreLayout}>
     <IndexRoute component={HomeView} />
     <Route path='/404' component={NotFoundView} />
-    <Route path='/dir' component={ListBooksView} />
+    <Route path='/Bookshelf' component={Bookshelf} />
     <Redirect from='*' to='/404' />
   </Route>
 )

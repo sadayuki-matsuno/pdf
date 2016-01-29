@@ -23,6 +23,8 @@ export default function configureStore ({ initialState = {}, history }) {
   if (__DEBUG__) routerMiddleware.listenForReplays(store, ({ router }) => router)
 
   if (module.hot) {
+//    module.hot.accept('./rootReducer', () => {
+//      const nextRootReducer = require('./rootReducer').default
     module.hot.accept('./rootReducer', () => {
       const nextRootReducer = require('./rootReducer').default
 
