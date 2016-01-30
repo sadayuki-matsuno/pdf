@@ -21,8 +21,8 @@ export class Bookshelf extends React.Component {
   };
 
   render () {
-    console.dir('post======')
-    console.dir(this.props.posts)
+    console.dir('posts BookshelfList.js')
+    console.dir(this.props.posts[1])
     return (
       <div className='container text-center'>
         <button className='btn btn-default'
@@ -35,11 +35,13 @@ export class Bookshelf extends React.Component {
           Double (Async)
         </button>
         <hr />
-        <ul>
-          {this.props.posts.map((post, i) =>
-            <li key={i}>{post}</li>
-          )}
+        {this.props.posts.map((post, i) =>
+        <ul key={i}>
+            <li key={i + 'fullpath'}>{post.fullPath}</li>
+            <li key={i + 'lastModified'}>{post.lastModified.toLocaleString()}</li>
+            <li key={i + 'childIndexOf'}>{post.childIndexOf}</li>
         </ul>
+        )}
         <Link to='/404'>Go to 404 Page</Link>
       </div>
     )

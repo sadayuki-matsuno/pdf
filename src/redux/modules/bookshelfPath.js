@@ -30,12 +30,23 @@ function selectedBookshelfPath (bookshelfPath) {
 }
 
 function receivePosts(bookshelfPath, json) {
-  console.dir('json')
-  console.dir(json)
+  let path = {}
+  
   return {
     type: RECEIVE_POSTS,
     bookshelfPath: bookshelfPath,
-    posts: json.Contents.map(child => child.Key),
+    posts: json.Contents.map(
+      child => { 
+        return {
+         fullPath: child.Key,
+         lastModified: child.LastModified,
+         childIndexOf: child.Key.indexOf('matsuno' + bookshelfPath)
+        }
+      }
+//    path: json.Contents.map(
+//      child => {
+    ),
+    directories: json.CommonPrefixes.map(child => child.Prefix),
     receivedAt: Date.now()
   }
 }
@@ -74,21 +85,14 @@ function getS3List (bookshelfPath) {
     var defaultPrefix = 'matsuno'
     var params = {
       Bucket: awsBucketName,
-      Prefix: defaultPrefix +  bookshelfPath
+      Prefix: defaultPrefix +  bookshelfPath,
+      Delimiter : '/'
     }
 
     s3.listObjects(params, function (err, data) {
+      console.dir(data)
       if (err) console.log(err, err.stack) // an error occurred
-      else {
-        dispatch(receivePosts(bookshelfPath, data))
-//        let contents = data['Contents']
-//        var response = {}
-//        for (var i = 0; i < contents.length; i++) {
-//          response[i] = {}
-//          response[i]['Name'] = contents[i]['Key']
-//        }
-        console.dir(data)
-      }
+      else dispatch(receivePosts(bookshelfPath, data))
     })
   }
 }
