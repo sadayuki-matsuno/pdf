@@ -1,27 +1,37 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
-import { fetchByPath, selectedBookshelfPath, fetchPostsIfNeeded } from '../../actions/bookshelfPath'
+// import { fetchByPath, selectedBookshelfPath } from '../../actions/bookshelfPath'
 import Image from './logo.png'
 import classes from './Bookshelf.scss'
 import BookshelfList from './BookshelfList'
 
 function mapStateToProps (state) {
+  console.dir('-----start mapStateToProps----')
+  console.dir(state)
+
+  const { bookshelf } = state
+  const bookshelfPath = bookshelf.bookshelfPath
+  console.dir('-----end mapStateToProps----')
   const {
     isFetching,
     lastUpdated,
-    items: posts
-  } = fetchByPath[selectedBookshelfPath] || {
+    didInvalidate,
+    pwd,
+    justUnder
+  } = bookshelf[bookshelfPath] || {
     isFetching: true,
-    items: []
+    pwd: [],
+    justUnder:[]
   }
 
   return {
-    selectedBookshelfPath,
-    posts,
+    bookshelfPath,
+    justUnder,
     isFetching,
+    didInvalidate,
     lastUpdated,
-    state
+    pwd
   }
 }
 
@@ -30,14 +40,20 @@ export class Bookshelf extends React.Component {
   };
 
   componentDidMount () {
-    const { dispatch, selectedBookshelfPath } = this.props
-    dispatch(fetchPostsIfNeeded(selectedBookshelfPath))
+//    this.props.fetchPostsIfNeeded(this.props.selectedBookshelfPath())
+    console.dir('----start bookshelf componentDidMount----')
+    console.dir('this.props')
+    console.dir(this.props)
+//    this.props.selectedBookshelfPath(this.props.bookshelPath)
+    this.props.fetchPostsIfNeeded(this.props.bookshelfPath)
+    console.dir('----end bookshelf componentDidMount----')
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.selectedBookshelfPath !== this.props.selectedBookshelfPath) {
-      const { dispatch, selectedBookshelfPath } = nextProps
-      dispatch(fetchPostsIfNeeded(selectedBookshelfPath))
+    if (nextProps.bookshelfPath !== this.props.bookshelfPath) {
+      console.dir('componentWillReceiveProps')
+      console.dir(this.props)
+//      this.props.fetchPostsIfNeeded(this.props.bookshelfPath)
     }
   }
 
@@ -54,7 +70,9 @@ export class Bookshelf extends React.Component {
   }
 
   render () {
-    const { selectedBookshelfPath, posts, isFetching, lastUpdated } = this.props
+    const { bookshelfPath, justUnder, isFetching, lastUpdated } = this.props
+
+
     const options = ['aws', 'aws12']
     return (
       <div className='container text-center'>
@@ -69,11 +87,11 @@ export class Bookshelf extends React.Component {
         <h2>
           Bookshelf Path :
           {' '}
-          <span className={classes['counter--green']}>{selectedBookshelfPath}</span>
+          <span className={classes['counter--green']}>{bookshelfPath}</span>
         </h2>
         <span>
           <select onChange={e => this.handleChange(e.target.value)}
-                  value={selectedBookshelfPath}>
+                  value={bookshelfPath}>
             {options.map(option =>
               <option value={option} key={option}>
                 {option}
@@ -96,15 +114,15 @@ export class Bookshelf extends React.Component {
             </a>
           }
         </p>
-        {!posts || isFetching && posts.length === 0 &&
+        {justUnder && isFetching && justUnder.length === 0 &&
           <h2>Loading...</h2>
         }
-        {!posts || !isFetching && posts && posts.length === 0 &&
+        {!isFetching && justUnder && justUnder.length === 0 &&
           <h2>Empty.</h2>
         }
-        {posts && posts.length > 0 &&
+        {justUnder && justUnder.length > 0 &&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <BookshelfList posts={posts} />
+            <BookshelfList justUnder={justUnder} />
           </div>
         }
       </div>

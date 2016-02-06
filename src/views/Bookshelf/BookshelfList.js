@@ -5,16 +5,21 @@ import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
 // import classes from './Bookshelf.scss'
 
 const mapStateToProps = (state) => ({
-  bookshelfPath: state.bookshelfPath
+  dummy: state.bookshelfPath
 })
 
-export class Bookshelf extends React.Component {
+export class BookshelfList extends React.Component {
   static propTypes = {
     bookshelfPath: PropTypes.string.isRequired,
-    posts: PropTypes.array.isRequired
+    justUnder: PropTypes.array.isRequired
   };
 
   render () {
+    console.dir('++++++++start BookshelfList+++++++++')
+    console.dir(this.props)
+    console.dir('++++++++end BookshelfList+++++++++')
+
+    const { bookshelfPath, justUnder } = this.props
     return (
       <div className='container text-center'>
         <button className='btn btn-default'>
@@ -25,17 +30,17 @@ export class Bookshelf extends React.Component {
           Double (Async)
         </button>
         <hr />
-        {this.props.posts.map((post, i) =>
-        <ul key={i}>
-            <li key={i + 'fullpath'}>{post.fullPath}</li>
-            <li key={i + 'lastModified'}>{post.lastModified.toLocaleString()}</li>
-            <li key={i + 'childIndexOf'}>{post.childIndexOf}</li>
+        <ul>
+          {justUnder.map((path, i) =>
+            <li key={i}>{path}</li>
+//            <li key={i + 'lastModified'}>{path.lastModified.toLocaleString()}</li>
+//            <li key={i + 'childIndexOf'}>{path.childIndexOf}</li>
+          )}
         </ul>
-        )}
         <Link to='/404'>Go to 404 Page</Link>
       </div>
     )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bookshelf)
+export default connect(mapStateToProps, mapDispatchToProps)(BookshelfList)

@@ -9,46 +9,31 @@ import {
 import { awsAccess, awsSecret, awsBucketName, awsRegion } from '../config/key.js'
 const AWS = window.AWS
 
-function formatS3Obj (bookshelfPath, json) {
+const formatS3Obj = (bookshelfPath, json) => {
   return {
-    bookshelfPath: bookshelfPath,
-    posts: json.Contents.map(
-      child => {
-        return {
-          fullPath: child.Key,
-          lastModified: child.LastModified,
-          childIndexOf: child.Key.indexOf('matsuno' + bookshelfPath)
-        }
+  pwd: json.Contents.map(
+    child => {
+      return {
+        fullPath: child.Key,
+        lastModified: child.LastModified,
+        childIndexOf: child.Key.indexOf('matsuno' + bookshelfPath)
       }
-    ),
-    directories: json.CommonPrefixes.map(child => child.Prefix),
-    receivedAt: Date.now()
+    }
+  ),
+  justUnder: json.CommonPrefixes.map(child => child.Prefix),
+  receivedAt: Date.now(),
+  bookshelfPath: bookshelfPath
   }
 }
 
-export function fetchByPath (state = {}, action) {
-  console.dir('fetch チェック')
-  console.dir(action)
-  switch (action.type) {
-    case INVALIDATE_BOOKSHELF:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
-      return Object.assign({}, state, {
-        [action.payload.bookshelfPath]:
-          Object.assign(
-            {},
-            state[action.payload.bookshelfPath], {
-              isFetching: true,
-              didInvalidate: false
-            })
-      })
-    default:
-      return state
-  }
-}
 
 function shouldFetchPosts (state, bookshelfPath) {
-  const posts = fetchByPath[bookshelfPath]
+  console.dir('----start shouldFetchPosts-----')
+  console.dir(state)
+  console.dir(bookshelfPath)
+  const posts = state.bookshelf[bookshelfPath]
+  console.dir(posts)
+  console.dir('----end shouldFetchPosts-----')
   if (!posts) {
     return true
   }
@@ -59,6 +44,7 @@ function shouldFetchPosts (state, bookshelfPath) {
 }
 
 export function fetchPostsIfNeeded (bookshelfPath) {
+  console.dir(bookshelfPath)
   return (dispatch, getState) => {
     if (shouldFetchPosts(getState(), bookshelfPath)) {
       return dispatch(getS3List(bookshelfPath))
@@ -87,12 +73,17 @@ function getS3List (bookshelfPath) {
   }
 }
 
+const bookshelfPathObj = (bp) => ({ bookshelfPath: bp })
+
+export const requestPosts = createAction(REQUEST_POSTS, bookshelfPathObj )
 export const receivePosts = createAction(RECEIVE_POSTS, formatS3Obj)
-export const requestPosts = createAction(REQUEST_POSTS, bookshelfPath => bookshelfPath)
-export const selectedBookshelfPath = createAction(SELECT_BOOKSHELF_PATH, bookshelfPath => bookshelfPath)
+export const selectedBookshelfPath = createAction(SELECT_BOOKSHELF_PATH, bookshelfPathObj)
 
 export const actions = {
+  fetchPostsIfNeeded,
   receivePosts,
   requestPosts,
   selectedBookshelfPath
 }
+
+
