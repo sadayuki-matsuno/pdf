@@ -1,4 +1,5 @@
 import { createAction } from 'redux-actions'
+import path from 'path'
 // can not use 'aws-sdk'
 // the resion is here -> http://andrewhfarmer.com/aws-sdk-with-webpack/
 import 'aws-sdk/dist/aws-sdk'
@@ -11,21 +12,20 @@ const AWS = window.AWS
 
 const formatS3Obj = (bookshelfPath, json) => {
   return {
-  pwd: json.Contents.map(
+  files: json.Contents.map(
     child => {
       return {
-        fullPath: child.Key,
+        fullPath: path.resolve(child.Key).split('/').pop(),
         lastModified: child.LastModified,
         childIndexOf: child.Key.indexOf('matsuno' + bookshelfPath)
       }
     }
   ),
-  justUnder: json.CommonPrefixes.map(child => child.Prefix),
+  justUnder: json.CommonPrefixes.map(child => path.resolve(child.Prefix).split('/').pop()),
   receivedAt: Date.now(),
   bookshelfPath: bookshelfPath
   }
 }
-
 
 function shouldFetchPosts (state, bookshelfPath) {
   console.dir('----start shouldFetchPosts-----')
@@ -60,7 +60,7 @@ function getS3List (bookshelfPath) {
     let defaultPrefix = 'matsuno'
     let params = {
       Bucket: awsBucketName,
-      Prefix: defaultPrefix + bookshelfPath,
+      Prefix: (defaultPrefix + bookshelfPath).replace(/\/?$/, '/'),
       Delimiter: '/'
     }
 
@@ -73,7 +73,12 @@ function getS3List (bookshelfPath) {
   }
 }
 
-const bookshelfPathObj = (bp) => ({ bookshelfPath: bp })
+const bookshelfPathObj = (bp) => {
+  return {
+    bookshelfPath: bp,
+    isiPdf: path.extname(bp) === 'pdf'
+  }
+}
 
 export const requestPosts = createAction(REQUEST_POSTS, bookshelfPathObj )
 export const receivePosts = createAction(RECEIVE_POSTS, formatS3Obj)

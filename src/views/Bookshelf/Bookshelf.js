@@ -5,6 +5,7 @@ import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
 import Image from './logo.png'
 import classes from './Bookshelf.scss'
 import BookshelfList from './BookshelfList'
+import Footer from './Footer'
 
 function mapStateToProps (state) {
   console.dir('-----start mapStateToProps----')
@@ -17,21 +18,21 @@ function mapStateToProps (state) {
     isFetching,
     lastUpdated,
     didInvalidate,
-    pwd,
+    files,
     justUnder
   } = bookshelf[bookshelfPath] || {
     isFetching: true,
-    pwd: [],
-    justUnder:[]
+    justUnder: [],
+    files: []
   }
 
   return {
     bookshelfPath,
+    files,
     justUnder,
     isFetching,
     didInvalidate,
     lastUpdated,
-    pwd
   }
 }
 
@@ -40,7 +41,6 @@ export class Bookshelf extends React.Component {
   };
 
   componentDidMount () {
-//    this.props.fetchPostsIfNeeded(this.props.selectedBookshelfPath())
     console.dir('----start bookshelf componentDidMount----')
     console.dir('this.props')
     console.dir(this.props)
@@ -53,34 +53,27 @@ export class Bookshelf extends React.Component {
     if (nextProps.bookshelfPath !== this.props.bookshelfPath) {
       console.dir('componentWillReceiveProps')
       console.dir(this.props)
-//      this.props.fetchPostsIfNeeded(this.props.bookshelfPath)
+      this.props.fetchPostsIfNeeded(nextProps.bookshelfPath)
     }
   }
 
-  handleChange (nextBookshelfPath) {
-    this.props.dispatch(selectedBookshelfPath(nextBookshelfPath))
-  }
-
-  handleRefreshClick (e) {
-    e.preventDefault()
-
-    const { dispatch, selectedBookshelfPath } = this.props
-//    dispatch(invalidateBbookshelfPath(selectedBookshelfPath))
-    dispatch(fetchPostsIfNeeded(selectedBookshelfPath))
+  logoClick () {
+    this.props.selectedBookshelfPath('/')
   }
 
   render () {
-    const { bookshelfPath, justUnder, isFetching, lastUpdated } = this.props
+    const { bookshelfPath, justUnder, files, isFetching, lastUpdated } = this.props
 
 
-    const options = ['aws', 'aws12']
     return (
       <div className='container text-center'>
         <div className='row'>
           <div className='col-xs-2 col-xs-offset-5'>
-            <img className={classes.duck}
+            <img className={classes.logo}
                  src={Image}
-                 alt='This is a duck, because Redux.' />
+                 alt='This is the logo.'
+                 onClick={() => this.logoClick()}
+            />
           </div>
         </div>
         <h1>Welcome to Matsuno PDF Viewer</h1>
@@ -89,42 +82,18 @@ export class Bookshelf extends React.Component {
           {' '}
           <span className={classes['counter--green']}>{bookshelfPath}</span>
         </h2>
-        <span>
-          <select onChange={e => this.handleChange(e.target.value)}
-                  value={bookshelfPath}>
-            {options.map(option =>
-              <option value={option} key={option}>
-                {option}
-              </option>)
-            }
-          </select>
-        </span>
-        <hr />
-        <p>
-          {lastUpdated &&
-            <span>
-              Last updated at {new Date(lastUpdated).toLocaleTimeString()}.
-              {' '}
-            </span>
-          }
-          {!isFetching &&
-            <a href='#'
-               onClick={this.handleRefreshClick}>
-              Refresh
-            </a>
-          }
-        </p>
         {justUnder && isFetching && justUnder.length === 0 &&
           <h2>Loading...</h2>
         }
-        {!isFetching && justUnder && justUnder.length === 0 &&
+        {!isFetching && justUnder && justUnder.length === 0 && files.length === 0 &&
           <h2>Empty.</h2>
         }
-        {justUnder && justUnder.length > 0 &&
+        { files && files.length > 0  &&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <BookshelfList justUnder={justUnder} />
+            <BookshelfList bookshelfPath={bookshelfPath} files={files} justUnder={justUnder} />
           </div>
         }
+      <Footer lastUpdated={lastUpdated}/>
       </div>
     )
   }

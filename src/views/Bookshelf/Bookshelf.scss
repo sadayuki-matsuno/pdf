@@ -7,8 +7,28 @@
   color: rgb(25,200,25);
 }
 
-.duck {
+.logo {
   display: block;
   width: 100%;
   margin-top: 1.5rem;
+}
+
+.path-button {
+  margin: 20px;
+// ボタンの間隔を開ける
+  margin-left: 60px;
+// スクリーンサイズが小さくなった時にボタンの文字がはみ出ないように
+  overflow:auto;
+// スクリーンサイズが小さくなった時に、はみ出た文字を...で表示
+  text-overflow: ellipsis;
+}
+
+.file-button {
+  margin: 20px;
+// ボタンの間隔を開ける
+  margin-left: 60px;
+// スクリーンサイズが小さくなった時にボタンの文字がはみ出ないように
+  overflow:auto;
+// スクリーンサイズが小さくなった時に、はみ出た文字を...で表示
+  text-overflow: ellipsis;
 }
