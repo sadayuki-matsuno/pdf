@@ -2,33 +2,38 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
 // import { fetchByPath, selectedBookshelfPath } from '../../actions/bookshelfPath'
+import path from 'path'
 import Image from './logo.png'
 import classes from './Bookshelf.scss'
 import BookshelfList from './BookshelfList'
-import Footer from './Footer'
+import Footer from '../Footer/Footer'
+import Preview from '../Preview/Preview'
 
 function mapStateToProps (state) {
-  console.dir('-----start mapStateToProps----')
-  console.dir(state)
 
   const { bookshelf } = state
   const bookshelfPath = bookshelf.bookshelfPath
-  console.dir('-----end mapStateToProps----')
   const {
     isFetching,
     lastUpdated,
     didInvalidate,
     files,
-    justUnder
+    fileContent,
+    justUnder,
+    isFile
   } = bookshelf[bookshelfPath] || {
     isFetching: true,
     justUnder: [],
-    files: []
+    files: [],
+    fileContent: [],
+    isFile: false
   }
 
   return {
     bookshelfPath,
+    isFile,
     files,
+    fileContent,
     justUnder,
     isFetching,
     didInvalidate,
@@ -38,22 +43,20 @@ function mapStateToProps (state) {
 
 export class Bookshelf extends React.Component {
   static propTypes = {
+    fileContent: PropTypes.array.isRequired
   };
 
   componentDidMount () {
-    console.dir('----start bookshelf componentDidMount----')
-    console.dir('this.props')
-    console.dir(this.props)
 //    this.props.selectedBookshelfPath(this.props.bookshelPath)
-    this.props.fetchPostsIfNeeded(this.props.bookshelfPath)
-    console.dir('----end bookshelf componentDidMount----')
+  
+    this.props.fetchPostsIfNeeded(this.props.bookshelfPath, this.props.isFile)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.bookshelfPath !== this.props.bookshelfPath) {
-      console.dir('componentWillReceiveProps')
-      console.dir(this.props)
-      this.props.fetchPostsIfNeeded(nextProps.bookshelfPath)
+  // TODO isFileが変更されない問題
+      let isFile = path.extname(nextProps.bookshelfPath).length > 0
+      this.props.fetchPostsIfNeeded(nextProps.bookshelfPath, isFile)
     }
   }
 
@@ -62,8 +65,46 @@ export class Bookshelf extends React.Component {
   }
 
   render () {
-    const { bookshelfPath, justUnder, files, isFetching, lastUpdated } = this.props
+    const { bookshelfPath, justUnder, files, isFetching, lastUpdated, fileContent } = this.props
 
+    const childDOM = () => {
+      let loading =
+        <h2>Loading...</h2>
+  
+      let empty =
+        <h2>Empty.</h2>
+  
+      let bookshelfList =
+      <div style={{ opacity: isFetching ? 0.5 : 1 }}>
+        <BookshelfList bookshelfPath={bookshelfPath} files={files} justUnder={justUnder} />
+      </div>
+
+      let preview =
+      <div style={{ opacity: isFetching ? 0.5 : 1 }}>
+        <Preview fileContent={fileContent} />
+      </div>
+
+      if (isFetching) {         
+        return loading          
+      }                         
+      if (fileContent)  {
+        return preview          
+      }
+      if (!justUnder || !files) {
+        return null
+      }
+
+      let isEmptyJustUnder = justUnder.length === 0
+      let isEmptyFile = files.length === 0
+
+      if (!isEmptyJustUnder || !isEmptyFile) {
+        return bookshelfList
+      }
+      if (!isFetching) {
+        return empty
+      }
+      return null
+    }
 
     return (
       <div className='container text-center'>
@@ -82,18 +123,8 @@ export class Bookshelf extends React.Component {
           {' '}
           <span className={classes['counter--green']}>{bookshelfPath}</span>
         </h2>
-        {justUnder && isFetching && justUnder.length === 0 &&
-          <h2>Loading...</h2>
-        }
-        {!isFetching && justUnder && justUnder.length === 0 && files.length === 0 &&
-          <h2>Empty.</h2>
-        }
-        { files && files.length > 0  &&
-          <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <BookshelfList bookshelfPath={bookshelfPath} files={files} justUnder={justUnder} />
-          </div>
-        }
-      <Footer lastUpdated={lastUpdated}/>
+        {childDOM()}
+        <Footer lastUpdated={lastUpdated}/>
       </div>
     )
   }

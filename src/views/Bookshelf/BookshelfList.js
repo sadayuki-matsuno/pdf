@@ -5,8 +5,6 @@ import classes from './Bookshelf.scss'
 import path from 'path'
 
 function mapStateToProps (state) {
-  console.dir('mapStateToProps in BookshelfList')
-  console.dir(state)
   return {dummy: state.bookshelfPath}
 }
 
@@ -16,29 +14,18 @@ export class BookshelfList extends React.Component {
   };
 
 clickPath (bookshelfPath, nextDir) {
-  console.dir(nextDir)
-  console.dir(bookshelfPath)
-  console.dir(path.resolve(bookshelfPath, nextDir))
   const nextFullPath = path.resolve(bookshelfPath, nextDir)
-  console.dir(this)
 
   this.props.selectedBookshelfPath(nextFullPath)
 }
 
 clickFile (bookshelfPath, nextDir) {
-  console.dir(nextDir)
-  console.dir(bookshelfPath)
-  console.dir(path.resolve(bookshelfPath, nextDir))
   const nextFullPath = path.resolve(bookshelfPath, nextDir)
-  console.dir(this)
 
-//  this.props.selectedBookshelfPath(nextFullPath)
+  this.props.selectedBookshelfPath(nextFullPath)
 }
 
   render () {
-    console.dir('++++++++start BookshelfList+++++++++')
-    console.dir(this.props)
-    console.dir('++++++++end BookshelfList+++++++++')
 
     const { bookshelfPath, files, justUnder } = this.props
     return (

@@ -10,14 +10,13 @@ import {
 import { awsAccess, awsSecret, awsBucketName, awsRegion } from '../config/key.js'
 const AWS = window.AWS
 
-const formatS3Obj = (bookshelfPath, json) => {
+const formatS3List = (bookshelfPath, json) => {
   return {
   files: json.Contents.map(
     child => {
       return {
         fullPath: path.resolve(child.Key).split('/').pop(),
-        lastModified: child.LastModified,
-        childIndexOf: child.Key.indexOf('matsuno' + bookshelfPath)
+        lastModified: child.LastModified
       }
     }
   ),
@@ -27,13 +26,21 @@ const formatS3Obj = (bookshelfPath, json) => {
   }
 }
 
+const formatS3Obj = (bookshelfPath, json) => {
+  return {
+    fileContent: {
+      body: json.Body,
+      lastModified: json.LastModified,
+      contentType: json.ContentType,
+      contentLength: json.ContentLength,
+    },
+    bookshelfPath: bookshelfPath,
+    receivedAt: Date.now(),
+  }
+}
+
 function shouldFetchPosts (state, bookshelfPath) {
-  console.dir('----start shouldFetchPosts-----')
-  console.dir(state)
-  console.dir(bookshelfPath)
   const posts = state.bookshelf[bookshelfPath]
-  console.dir(posts)
-  console.dir('----end shouldFetchPosts-----')
   if (!posts) {
     return true
   }
@@ -43,11 +50,14 @@ function shouldFetchPosts (state, bookshelfPath) {
   return posts.didInvalidate
 }
 
-export function fetchPostsIfNeeded (bookshelfPath) {
-  console.dir(bookshelfPath)
+export function fetchPostsIfNeeded (bookshelfPath, isFile) {
   return (dispatch, getState) => {
     if (shouldFetchPosts(getState(), bookshelfPath)) {
-      return dispatch(getS3List(bookshelfPath))
+      if (isFile) {
+        return dispatch(getS3Obj(bookshelfPath))
+      }else{  
+        return dispatch(getS3List(bookshelfPath))
+      }
     }
   }
 }
@@ -65,10 +75,27 @@ function getS3List (bookshelfPath) {
     }
 
     s3.listObjects(params, function (err, data) {
-      console.dir('get s3 list raw data')
-      console.dir(data)
       if (err) console.log(err, err.stack) // an error occurred
-      else dispatch(receivePosts(bookshelfPath, data))
+      else dispatch(receivePosts(bookshelfPath, data, false))
+    })
+  }
+}
+
+function getS3Obj (bookshelfPath) {
+  return dispatch => {
+    dispatch(requestPosts(bookshelfPath))
+
+    let s3 = new AWS.S3({ accessKeyId: awsAccess, secretAccessKey: awsSecret, region: awsRegion })
+    let defaultPrefix = 'matsuno'
+    let s3Key = defaultPrefix + bookshelfPath
+    let params = {
+      Bucket: awsBucketName,
+      Key: s3Key
+    }
+
+    s3.getObject(params, function (err, data) {
+      if (err) console.log(err, err.stack) // an error occurred
+      else dispatch(receivePosts(bookshelfPath, data, true))
     })
   }
 }
@@ -76,12 +103,20 @@ function getS3List (bookshelfPath) {
 const bookshelfPathObj = (bp) => {
   return {
     bookshelfPath: bp,
-    isiPdf: path.extname(bp) === 'pdf'
+    isFile: path.extname(bp).length > 0
+  }
+}
+
+const formatS3 = (bookshelfPath, json, isFile) => {
+  if (isFile) {
+    return formatS3Obj(bookshelfPath, json)
+  }else{
+    return formatS3List(bookshelfPath, json)
   }
 }
 
 export const requestPosts = createAction(REQUEST_POSTS, bookshelfPathObj )
-export const receivePosts = createAction(RECEIVE_POSTS, formatS3Obj)
+export const receivePosts = createAction(RECEIVE_POSTS, formatS3)
 export const selectedBookshelfPath = createAction(SELECT_BOOKSHELF_PATH, bookshelfPathObj)
 
 export const actions = {
@@ -90,5 +125,3 @@ export const actions = {
   requestPosts,
   selectedBookshelfPath
 }
-
-

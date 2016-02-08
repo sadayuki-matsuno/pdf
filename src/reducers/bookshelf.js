@@ -6,7 +6,7 @@ export default handleActions({
   SELECT_BOOKSHELF_PATH: (state, action) => (
     Object.assign({}, state, {
       bookshelfPath: action.payload.bookshelfPath,
-      isPdf: action.payload.isFile
+      isFile: action.payload.isFile
     })
   ),
   REQUEST_POSTS: (state, action) => (
@@ -24,8 +24,9 @@ export default handleActions({
         didInvalidate: false,
         files: action.payload.files,
         justUnder: action.payload.justUnder,
+        fileContent: action.payload.fileContent,
         lastUpdated: action.payload.receivedAt
-      }
+      }  
     })
   ),
   INVALIDATE_BOOKSHELF: (state, action) => (
@@ -35,5 +36,9 @@ export default handleActions({
       }
     })
   ),
-},{ bookshelfPath: '/', isPdf: false })
+},
+{ 
+  bookshelfPath: '/',
+  isFile: false 
+})
 
