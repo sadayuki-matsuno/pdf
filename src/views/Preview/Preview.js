@@ -2,12 +2,13 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import classes from './Preview.scss'
 import path from 'path'
+import View from './View'
 
 function mapStateToProps (state) {
   return {dummy: state.bookshelfPath}
 }
 
-export class BookshelfList extends React.Component {
+export class Preview extends React.Component {
   static propTypes = {
   };
 
@@ -24,15 +25,15 @@ export class BookshelfList extends React.Component {
 // }
 
   render () {
-
     const { bookshelfPath, fileContent } = this.props
     return (
       <div className='container text-center'>
         <hr />
         <h2>This is Preview</h2>
+        <View fileContent={fileContent} />
       </div>
     )
   }
 }
 
-export default connect(mapStateToProps)(BookshelfList)
+export default connect(mapStateToProps)(Preview)
