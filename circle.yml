@@ -1,0 +1,31 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  node:
+    version: 5.1.0
+  timezone: Asia/Tokyo
+
+dependencies:
+  pre:
+    - git config --global user.name "CircleCI"
+    - git config --global user.email "circleci@example.com"
+
+test:
+  override:
+    - npm test
+
+deployment:
+  production:
+    branch: master
+    commands: 
+      - git clone -b dev git@github.com:sadayuki-matsuno/pdf.git dev
+      - cd dev && git submodule add -f -b gh-pages git@github.com:sadayuki-matsuno/pdf.git dist
+      - cd dev && npm install
+      - rm -rf dev/dist/*
+      - cd dev && NODE_ENV=production npm run compile
+      - cd dev/dist && git add -A
+      - cd dev/dist && git commit -m "[ci skip] publish" || true
+      - cd dev/dist && git push origin gh-pages

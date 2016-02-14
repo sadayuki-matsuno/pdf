@@ -1,3 +1,5 @@
-# redux-sample
+This is Matsuno PDF Viewer
 
-redux-sample
+[![Circle CI](https://circleci.com/gh/sadayuki-matsuno/pdf.svg?style=svg)](https://circleci.com/gh/sadayuki-matsuno/pdf)
+
+
