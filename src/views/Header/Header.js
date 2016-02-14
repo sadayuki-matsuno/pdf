@@ -1,10 +1,6 @@
-import React, { PropTypes } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import Image from './logo.png'
 import classes from './Header.scss'
-
-const mapStateToProps = (state) => ({
-})
 
 export class Header extends React.Component {
   logoClick () {
@@ -29,4 +25,4 @@ export class Header extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(Header)
+export default Header

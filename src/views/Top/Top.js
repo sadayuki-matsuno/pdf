@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import classes from './Top.scss'
+// import classes from './Top.scss'
 import Bookshelf from '../Bookshelf/Bookshelf'
 import Footer from '../Footer/Footer'
 import Header from '../Header/Header'
 import Auth from '../Auth/Auth'
 
 const mapStateToProps = (state) => ({
-   auth: state.auth
+  auth: state.auth
 })
 
 export class Top extends React.Component {
@@ -16,14 +16,11 @@ export class Top extends React.Component {
   };
 
   render () {
-    const { auth  } = this.props
+    const { auth } = this.props
     return (
       <div>
         <Header />
-        { auth && auth.valid ? 
-            <Bookshelf /> : 
-            <Auth auth={auth}/>
-        }
+        { auth && auth.valid ? <Bookshelf /> : <Auth auth={auth}/> }
         <Footer />
       </div>
     )
