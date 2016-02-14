@@ -4,57 +4,54 @@ import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
 import classes from './Bookshelf.scss'
 import path from 'path'
 
-function mapStateToProps (state) {
-  return {dummy: state.bookshelfPath}
-}
+const mapStateToProps = state => ({
+  dirs: state.bookshelf[state.bookshelf.bookshelfPath].dirs,
+  files: state.bookshelf[state.bookshelf.bookshelfPath].files
+})
 
 export class BookshelfList extends React.Component {
   static propTypes = {
-    justUnder: PropTypes.array.isRequired
+    bookshelfPath: PropTypes.string.isRequired,
+    dirs: PropTypes.array.isRequired,
+    files: PropTypes.array.isRequired,
+    selectedPath: PropTypes.func.isRequired
   };
 
 clickPath (bookshelfPath, nextDir) {
   const nextFullPath = path.resolve(bookshelfPath, nextDir)
-
-  this.props.selectedBookshelfPath(nextFullPath)
+  this.props.selectedPath(nextFullPath)
 }
 
 clickFile (bookshelfPath, nextDir) {
   const nextFullPath = path.resolve(bookshelfPath, nextDir)
+  this.props.selectedPath(nextFullPath)
+}
 
-  this.props.selectedBookshelfPath(nextFullPath)
+classAttr (dirs, i) {
+  let defaultAttr = 'btn btn-default btn-lg col-md-3 col-sm-2 '
+  return (!dirs || i >= dirs.length)
+    ? defaultAttr + 'btn-success ' + classes['file-button']
+    : defaultAttr + classes['file-button']
 }
 
   render () {
-
-    const { bookshelfPath, files, justUnder } = this.props
+    const { bookshelfPath, files, dirs } = this.props
+    let eles = dirs ? dirs.concat(files) : files
     return (
       <div className='container text-center'>
-        <hr />
-       {justUnder.map((path, i) =>
+       {eles.map((ele, i) =>
           <div key={i + 'div-path'}>
-            <button 
-              value={path}
-              className={'btn btn-default btn-lg col-md-3 col-sm-2 ' + classes['path-button']} 
+            <button
+              value={ele.name}
+              className={this.classAttr(dirs, i)}
               onClick={ e => this.clickPath(bookshelfPath, e.target.value) }
-              key={i + path}
+              key={i + 'el'}
             >
-              {path}
+              {ele.name}
             </button>
          </div>
        )}
-       {bookshelfPath != '/' && files.map((file, i) =>
-          <div key={i + 'div-file'}>
-            <button 
-              value={file.fullPath}
-              className={'btn btn-default btn-lg col-md-5 col-sm-3 btn-success ' + classes['file-button']} 
-              onClick={ e => this.clickFile(bookshelfPath, e.target.value) }
-              key={i + 'file'}
-            >
-              {file.fullPath}
-            </button>
-         </div>
-       )}
+        <hr />
       </div>
     )
   }

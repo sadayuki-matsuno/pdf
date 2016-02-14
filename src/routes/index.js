@@ -7,12 +7,12 @@ import { Route, IndexRoute, Redirect } from 'react-router'
 // very easy to navigate to files regardless of how deeply nested
 // your current file is.
 import CoreLayout from 'layouts/CoreLayout/CoreLayout'
-import Bookshelf from 'views/Bookshelf/Bookshelf'
+import Top from 'views/Top/Top'
 import NotFoundView from 'views/NotFoundView/NotFoundView'
 
 export default (
-  <Route path='/Bookshelf' component={CoreLayout}>
-    <IndexRoute component={Bookshelf} />
+  <Route path='/pdf' component={CoreLayout}>
+    <IndexRoute component={Top} />
     <Route path='/404' component={NotFoundView} />
     <Redirect from='*' to='/404' />
   </Route>

@@ -1,6 +1,4 @@
-import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
-import { INVALIDATE_BOOKSHELF, RECEIVE_POSTS, REQUEST_POSTS }from '../constants/constants'
 
 export default handleActions({
   SELECT_BOOKSHELF_PATH: (state, action) => (
@@ -23,10 +21,10 @@ export default handleActions({
         isFetching: false,
         didInvalidate: false,
         files: action.payload.files,
-        justUnder: action.payload.justUnder,
-        fileContent: action.payload.fileContent,
+        dirs: action.payload.dirs,
+        fileUrl: action.payload.fileUrl,
         lastUpdated: action.payload.receivedAt
-      }  
+      }
     })
   ),
   INVALIDATE_BOOKSHELF: (state, action) => (
@@ -35,10 +33,10 @@ export default handleActions({
         didInvalidate: true
       }
     })
-  ),
-},
-{ 
+  )
+}, {
   bookshelfPath: '/',
-  isFile: false 
-})
+  isFile: false
+}
+)
 
