@@ -4,7 +4,7 @@ import classes from './Bookshelf.scss'
 import BookshelfList from './BookshelfList'
 import Preview from '../Preview/Preview'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   bookshelfPath: state.bookshelf.bookshelfPath,
   isFile: state.bookshelf.isFile
 })

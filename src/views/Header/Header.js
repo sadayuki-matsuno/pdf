@@ -13,9 +13,9 @@ export class Header extends React.Component {
         <div className='row'>
           <div className='col-xs-2 col-xs-offset-5'>
             <img className={classes.logo}
-                 src={Image}
-                 alt='This is the logo.'
-                 onClick={() => this.logoClick()}
+              src={Image}
+              alt='This is the logo.'
+              onClick={this.logoClick}
             />
           </div>
         </div>

@@ -11,15 +11,15 @@ import { awsBucketName } from '../config/config.js'
 const AWS = window.AWS
 
 const formatS3List = (bookshelfPath, json) => ({
-  files: json.Contents.filter(child => {
+  files: json.Contents.filter((child) => {
     return (child.Key.slice(-1) !== '/')
-  }).map(child => {
+  }).map((child) => {
     return {
       name: path.resolve(child.Key).split('/').pop(),
       lastModified: child.LastModified
     }
   }),
-  dirs: json.CommonPrefixes.map(child => ({
+  dirs: json.CommonPrefixes.map((child) => ({
     name: path.resolve(child.Prefix).split('/').pop()
   })),
   receivedAt: Date.now(),
@@ -46,7 +46,7 @@ export const fetchPostsIfNeeded = (bookshelfPath, isFile = false) => {
 }
 
 const getS3List = (state, bookshelfPath) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requestPosts(bookshelfPath))
 
     AWS.config.update(state.auth.awsConfig)
@@ -64,7 +64,7 @@ const getS3List = (state, bookshelfPath) => {
   }
 }
 
-const pathObj = bp => ({
+const pathObj = (bp) => ({
   bookshelfPath: bp,
   isFile: path.extname(bp).length > 0
 })
