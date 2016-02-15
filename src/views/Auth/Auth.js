@@ -43,17 +43,17 @@ export class Auth extends React.Component {
         <h2>This is Auth page</h2>
         {
          <p>Login by facebook, or you can not use this system.</p> &&
-          <FacebookLogin
-            appId={fbAppId}
-            xfbml
-            autoLoad
-            scope={fbScope}
-            size={this.hideButtonAttr(auth)}
-            textButton={'Login by Facebook'}
-            callback={this.responseFacebook}
-          />
+           <FacebookLogin
+             appId={fbAppId}
+             xfbml
+             autoLoad
+             scope={fbScope}
+             size={this.hideButtonAttr(auth)}
+             textButton={'Login by Facebook'}
+             callback={this.responseFacebook}
+           />
         }
-        { auth.isChecking && <h2>Auth Checking ...</h2> }
+        {auth.isChecking && <h2>Auth Checking ...</h2>}
       </div>
     )
   }

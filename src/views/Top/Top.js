@@ -20,7 +20,7 @@ export class Top extends React.Component {
     return (
       <div>
         <Header />
-        { auth && auth.valid ? <Bookshelf /> : <Auth auth={auth}/> }
+        {auth && auth.valid ? <Bookshelf /> : <Auth auth={auth}/>}
         <Footer />
       </div>
     )

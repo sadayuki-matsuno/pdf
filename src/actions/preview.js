@@ -27,7 +27,7 @@ export const getUrlIfNeeded = (bookshelfPath) => {
 }
 
 const getS3Url = (state, bookshelfPath) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requestUrl(bookshelfPath))
 
     AWS.config.update(state.auth.awsConfig)
@@ -46,7 +46,7 @@ const getS3Url = (state, bookshelfPath) => {
   }
 }
 
-const pathObj = bp => ({
+const pathObj = (bp) => ({
   bookshelfPath: bp,
   isFile: path.extname(bp).length > 0
 })

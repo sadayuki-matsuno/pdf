@@ -4,7 +4,7 @@ import { actions as mapDispatchToProps } from '../../actions/bookshelfPath'
 import classes from './Bookshelf.scss'
 import path from 'path'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { bookshelfPath } = state.bookshelf
   const {
     dirs,
@@ -47,7 +47,9 @@ export class BookshelfList extends React.Component {
     }
   }
 
-  clickPath (bookshelfPath, nextDir) {
+  clickPath = (e) => {
+    let bookshelfPath = this.props.bookshelfPath
+    let nextDir = e.target.value
     const nextFullPath = path.resolve(bookshelfPath, nextDir)
     this.props.selectedPath(nextFullPath)
   }
@@ -60,20 +62,20 @@ export class BookshelfList extends React.Component {
   }
 
   render () {
-    const { bookshelfPath, files, dirs, isFetching } = this.props
+    const { files, dirs, isFetching } = this.props
     let eles = (dirs || files) ? dirs.concat(files) : []
     return (
       <div className='container text-center'>
        {!isFetching && eles.map((ele, i) =>
-          <div key={i + 'div-path'}>
-            <button
-              value={ele.name}
-              className={this.classAttr(dirs, i)}
-              onClick={ e => this.clickPath(bookshelfPath, e.target.value) }
-              key={i + 'el'}
-            >
-              {ele.name}
-            </button>
+         <div key={i + 'div-path'}>
+           <button
+             value={ele.name}
+             className={this.classAttr(dirs, i)}
+             onClick={this.clickPath}
+             key={i + 'el'}
+           >
+             {ele.name}
+           </button>
          </div>
        )}
        {isFetching && <h2>loading ...</h2>}

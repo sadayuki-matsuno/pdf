@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 // import classes from './Preview.scss'
 import { actions as mapDispatchToProps } from '../../actions/preview'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let bookshelfPath = state.bookshelf.bookshelfPath
   let pwd = state.preview[bookshelfPath]
 
@@ -27,8 +27,13 @@ export class Preview extends React.Component {
     getUrlIfNeeded(bookshelfPath)
   }
 
+  onClick = () => {
+    let fileUrl = this.props.fileUrl
+    window.open(fileUrl, '_blank')
+  }
+
   render () {
-    const { fileUrl, receivedAt } = this.props
+    const { receivedAt } = this.props
     return (
       <div className='container text-center'>
         <hr />
@@ -36,10 +41,10 @@ export class Preview extends React.Component {
         <input
           className='btn btn-danger btn-lg'
           type='button'
-          onClick={() => window.open(fileUrl, '_blank')}
+          onClick={this.onClick}
           value='Preview NOW'
         />
-        { receivedAt && <p>You got this link at {new Date(receivedAt).toLocaleString()}</p> }
+        {receivedAt && <p>You got this link at {new Date(receivedAt).toLocaleString()}</p>}
         <p>This Link will be expired in 5 minites</p>
       </div>
     )

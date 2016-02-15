@@ -9,7 +9,7 @@ import { awsIdentityPoolId, awsRegion } from '../config/config.js'
 const AWS = window.AWS
 
 export const cognitoAuth = (fbToken) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(requestAuth())
     let creds = new AWS.CognitoIdentityCredentials({
       IdentityPoolId: awsIdentityPoolId,
