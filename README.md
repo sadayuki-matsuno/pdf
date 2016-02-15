@@ -1,3 +1,0 @@
-# pdf
-
-private pdf viewer
