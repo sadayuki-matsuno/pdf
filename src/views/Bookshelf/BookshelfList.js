@@ -61,7 +61,7 @@ export class BookshelfList extends React.Component {
 
   render () {
     const { bookshelfPath, files, dirs, isFetching } = this.props
-    let eles = !!(dirs || files) ? dirs.concat(files) : []
+    let eles = (dirs || files) ? dirs.concat(files) : []
     return (
       <div className='container text-center'>
        {!isFetching && eles.map((ele, i) =>

@@ -9,8 +9,8 @@ const mapStateToProps = state => {
 
   return {
     bookshelfPath: bookshelfPath,
-    fileUrl: !!pwd ? pwd.fileUrl : '',
-    receivedAt: !!pwd ? pwd.receivedAt : ''
+    fileUrl: pwd ? pwd.fileUrl : '',
+    receivedAt: pwd ? pwd.receivedAt : 0
   }
 }
 
