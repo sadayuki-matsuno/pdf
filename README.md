@@ -1,5 +1,6 @@
 # This is Matsuno PDF Viewer
 
+[![Stories in Ready](https://badge.waffle.io/sadayuki-matsuno/pdf.png?label=ready&title=Ready)](https://waffle.io/sadayuki-matsuno/pdf)
 [![Circle CI](https://circleci.com/gh/sadayuki-matsuno/pdf.svg?style=svg)](https://circleci.com/gh/sadayuki-matsuno/pdf)
 
 # Feature
