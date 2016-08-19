@@ -36,7 +36,7 @@ const getS3Url = (state, bookshelfPath) => {
     let params = {
       Bucket: awsBucketName,
       Key: s3Key,
-      Expires: 300
+      Expires: 1800
     }
 
     s3.getSignedUrl('getObject', params, function (err, url) {
