@@ -1,60 +1,69 @@
-import Koa from 'koa'
-import convert from 'koa-convert'
-import webpack from 'webpack'
-import webpackConfig from '../build/webpack.config'
-import historyApiFallback from 'koa-connect-history-api-fallback'
-import serve from 'koa-static'
-import _debug from 'debug'
-import config from '../config'
-import webpackProxyMiddleware from './middleware/webpack-proxy'
-import webpackDevMiddleware from './middleware/webpack-dev'
-import webpackHMRMiddleware from './middleware/webpack-hmr'
+const express = require('express')
+const debug = require('debug')('app:server')
+const path = require('path')
+const webpack = require('webpack')
+const webpackConfig = require('../config/webpack.config')
+const project = require('../config/project.config')
+const compress = require('compression')
 
-const debug = _debug('app:server')
-const paths = config.utils_paths
-const app = new Koa()
+const app = express()
 
-// This rewrites all routes requests to the root /index.html file
-// (ignoring file requests). If you want to implement isomorphic
-// rendering, you'll want to remove this middleware.
-app.use(convert(historyApiFallback({
-  verbose: false
-})))
+// Apply gzip compression
+app.use(compress())
 
 // ------------------------------------
 // Apply Webpack HMR Middleware
 // ------------------------------------
-if (config.env === 'development') {
+if (project.env === 'development') {
   const compiler = webpack(webpackConfig)
 
-  // Enable webpack-dev and webpack-hot middleware
-  const { publicPath } = webpackConfig.output
+  debug('Enabling webpack dev and HMR middleware')
+  app.use(require('webpack-dev-middleware')(compiler, {
+    publicPath  : webpackConfig.output.publicPath,
+    contentBase : project.paths.client(),
+    hot         : true,
+    quiet       : project.compiler_quiet,
+    noInfo      : project.compiler_quiet,
+    lazy        : false,
+    stats       : project.compiler_stats
+  }))
+  app.use(require('webpack-hot-middleware')(compiler, {
+    path: '/__webpack_hmr'
+  }))
 
-  if (config.proxy && config.proxy.enabled) {
-    const options = config.proxy.options
-    app.use(convert(webpackProxyMiddleware(options)))
-  }
-
-  app.use(webpackDevMiddleware(compiler, publicPath))
-  app.use(webpackHMRMiddleware(compiler))
-
-  // Serve static assets from ~/src/static since Webpack is unaware of
+  // Serve static assets from ~/public since Webpack is unaware of
   // these files. This middleware doesn't need to be enabled outside
   // of development since this directory will be copied into ~/dist
   // when the application is compiled.
-  app.use(convert(serve(paths.client('static'))))
+  app.use(express.static(project.paths.public()))
+
+  // This rewrites all routes requests to the root /index.html file
+  // (ignoring file requests). If you want to implement universal
+  // rendering, you'll want to remove this middleware.
+  app.use('*', function (req, res, next) {
+    const filename = path.join(compiler.outputPath, 'index.html')
+    compiler.outputFileSystem.readFile(filename, (err, result) => {
+      if (err) {
+        return next(err)
+      }
+      res.set('content-type', 'text/html')
+      res.send(result)
+      res.end()
+    })
+  })
 } else {
   debug(
-    'Server is being run outside of live development mode. This starter kit ' +
-    'does not provide any production-ready server functionality. To learn ' +
-    'more about deployment strategies, check out the "deployment" section ' +
-    'in the README.'
+    'Server is being run outside of live development mode, meaning it will ' +
+    'only serve the compiled application bundle in ~/dist. Generally you ' +
+    'do not need an application server for this and can instead use a web ' +
+    'server such as nginx to serve your static files. See the "deployment" ' +
+    'section in the README for more information on deployment strategies.'
   )
 
   // Serving ~/dist by default. Ideally these files should be served by
   // the web server and not the app server, but this helps to demo the
   // server in production.
-  app.use(convert(serve(paths.base(config.dir_dist))))
+  app.use(express.static(project.paths.dist()))
 }
 
-export default app
+module.exports = app
