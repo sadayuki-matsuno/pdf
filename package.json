@@ -112,6 +112,7 @@
     "yargs": "^6.3.0"
   },
   "devDependencies": {
+    "aws-sdk": "^2.30.0",
     "babel-eslint": "^7.1.0",
     "babel-plugin-istanbul": "^3.0.0",
     "chai": "^3.4.1",
@@ -138,7 +139,9 @@
     "nodemon": "^1.10.2",
     "phantomjs-prebuilt": "^2.1.12",
     "react-addons-test-utils": "^15.0.0",
+    "react-facebook-login": "^3.5.0",
     "redbox-react": "^1.2.10",
+    "redux-actions": "^2.0.1",
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
     "webpack-dev-middleware": "^1.6.1",
