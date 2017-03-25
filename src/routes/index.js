@@ -2,17 +2,17 @@
 import CoreLayout from '../layouts/CoreLayout'
 import Home from './Home'
 import Top from './Top'
-import CounterRoute from './Counter'
+// import CounterRoute from './Counter'
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
 
 export const createRoutes = (store) => ({
-  path        : '/',
+  path        : '/pdf',
   component   : CoreLayout,
   indexRoute  : Top,
   childRoutes : [
-    CounterRoute(store)
+//    CounterRoute(store)
   ]
 })
 
