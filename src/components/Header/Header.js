@@ -1,6 +1,6 @@
 import React from 'react'
 import { IndexLink } from 'react-router'
-import Image from './logo.png'
+import Image from '../../assets/logo.png'
 import './Header.scss'
 
 export const Header = () => (
